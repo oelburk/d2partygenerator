@@ -58,79 +58,99 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: const TextStyle(fontFamily: 'Diablo'),
+        ),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Add Player'),
-                                content: SingleChildScrollView(
-                                  child: ListBody(
-                                    children: <Widget>[
-                                      const Text('Enter name'),
-                                      TextField(
-                                        controller: playerNameController,
-                                        maxLength: 50,
-                                      ),
-                                    ],
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Add Player'),
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        const Text('Enter name'),
+                                        TextField(
+                                          autofocus: true,
+                                          onSubmitted: (value) {
+                                            addPlayer(
+                                                playerNameController.text);
+                                            Navigator.of(context).pop();
+                                            playerNameController.clear();
+                                          },
+                                          controller: playerNameController,
+                                          maxLength: 50,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: const Text('Cancel'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      playerNameController.clear();
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: const Text('Approve'),
-                                    onPressed: () {
-                                      addPlayer(playerNameController.text);
-                                      Navigator.of(context).pop();
-                                      playerNameController.clear();
-                                    },
-                                  ),
-                                ],
-                              );
-                            });
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(12.0),
-                        child: Text(
-                          'ADD PLAYER',
-                          style: TextStyle(fontSize: 25, fontFamily: 'Diablo'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text('Cancel'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        playerNameController.clear();
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: const Text('Approve'),
+                                      onPressed: () {
+                                        addPlayer(playerNameController.text);
+                                        Navigator.of(context).pop();
+                                        playerNameController.clear();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Text(
+                            'ADD PLAYER',
+                            style:
+                                TextStyle(fontSize: 25, fontFamily: 'Diablo'),
+                          ),
+                        )),
+                    SingleChildScrollView(
+                      padding: const EdgeInsets.all(20),
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        height: 50,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(players.length, (index) {
+                            return SizedBox(
+                              width: 150,
+                              child: PlayerCard(
+                                name: players[index].Name,
+                                playerColor: players[index].playerColor,
+                                onPress: () {},
+                              ),
+                            );
+                          }),
                         ),
-                      )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(players.length, (index) {
-                      return SizedBox(
-                        width: 150,
-                        child: PlayerCard(
-                          name: players[index].Name,
-                          playerColor: players[index].playerColor,
-                          onPress: () {},
-                        ),
-                      );
-                    }),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      padding: EdgeInsets.all(20),
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
                         width: 800,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -146,41 +166,48 @@ class _MyHomePageState extends State<MyHomePage> {
                           }),
                         ),
                       ),
-                    ],
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        finalParty.clear();
-                      });
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          finalParty.clear();
+                        });
 
-                      generateParty();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(
-                        'GENERATE',
-                        style: TextStyle(fontSize: 55, fontFamily: 'Diablo'),
+                        generateParty();
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Text(
+                          'GENERATE',
+                          style: TextStyle(fontSize: 45, fontFamily: 'Diablo'),
+                        ),
                       ),
                     ),
-                  ),
-                  const Text('Your demon slaying party:'),
-                  SizedBox(
-                    height: 500,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(finalParty.length, (index) {
-                        CClass char = finalParty[index].playerClass;
-                        return ClassFrame(
-                          name: finalParty[index].Name,
-                          imageAddress: ClassResolver.imageAdrFromClass(char),
-                          players: players,
-                          displayOnly: true,
-                        );
-                      }),
+                    const Padding(
+                      padding: EdgeInsets.all(28.0),
+                      child: Text('Your demon slaying party:'),
                     ),
-                  ),
-                ],
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        height: 250,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(finalParty.length, (index) {
+                            CClass char = finalParty[index].playerClass;
+                            return ClassFrame(
+                              name: finalParty[index].Name,
+                              imageAddress:
+                                  ClassResolver.imageAdrFromClass(char),
+                              players: players,
+                              displayOnly: true,
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             Padding(
